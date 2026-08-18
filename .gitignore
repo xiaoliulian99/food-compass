@@ -1,0 +1,12 @@
+node_modules/
+dist/
+test-artifacts/
+
+*.log
+desktop-opencli.png
+我和比奇堡的朋友们_1_小柠檬🍋_来自小红书网页版.jpg
+
+.agents/
+.codegraph/
+.DS_Store
+Thumbs.db

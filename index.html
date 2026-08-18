@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#087fa3" />
+    <meta name="description" content="西南石油大学饭点选择器，三选一，少纠结。" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="美食指南针" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>美食指南针</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      if (/^(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(location.hostname) && "serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          const cleanupKey = "food-compass-dev-cache-cleared-v3";
+          if (localStorage.getItem(cleanupKey)) return;
+          Promise.all(registrations.map((registration) => registration.unregister()))
+            .then(() => caches.keys())
+            .then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
+            .then(() => {
+              localStorage.setItem(cleanupKey, "1");
+              location.reload();
+            });
+        });
+      }
+    </script>
+    <script type="module" src="/src/main.js?v=20260818v3"></script>
+  </body>
+</html>
