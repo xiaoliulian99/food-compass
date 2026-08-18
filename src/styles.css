@@ -133,9 +133,9 @@ h3 {
 
 .scene-header {
   position: relative;
-  min-height: 124px;
+  min-height: 260px;
   overflow: hidden;
-  border-bottom: 4px solid var(--ink);
+  border-bottom: 5px solid var(--ink);
   background-color: #087fa3;
   background-image: url("/assets/canteen-reference.jpg");
   background-position: center 38%;
@@ -145,21 +145,21 @@ h3 {
 .scene-scrim {
   position: absolute;
   inset: 0;
-  background: rgba(8, 60, 75, 0.28);
-  box-shadow: inset 0 -60px 0 rgba(9, 43, 48, 0.42);
+  background: rgba(8, 60, 75, 0.2);
+  box-shadow: inset 0 -90px 0 rgba(9, 43, 48, 0.38);
   pointer-events: none;
 }
 
 .wood-sign {
   position: absolute;
-  top: 10px;
+  top: 20px;
   left: 50%;
-  width: min(72%, 360px);
-  padding: 6px 14px 8px;
-  border: 3px solid var(--wood-dark);
+  width: min(76%, 420px);
+  padding: 10px 18px 12px;
+  border: 4px solid var(--wood-dark);
   border-radius: 5px;
   background: var(--wood);
-  box-shadow: 4px 4px 0 rgba(39, 21, 12, 0.9);
+  box-shadow: 5px 6px 0 rgba(39, 21, 12, 0.9);
   text-align: center;
   transform: translateX(-50%) rotate(-1deg);
 }
@@ -167,9 +167,9 @@ h3 {
 .wood-sign::before,
 .wood-sign::after {
   position: absolute;
-  top: -18px;
-  width: 3px;
-  height: 19px;
+  top: -26px;
+  width: 4px;
+  height: 27px;
   background: var(--ink);
   content: "";
 }
@@ -185,59 +185,58 @@ h3 {
 .wood-sign-small {
   display: block;
   color: #4e2919;
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 900;
-  line-height: 1.1;
 }
 
 .wood-sign h1 {
   margin: 0;
   color: #9f1727;
-  font-size: clamp(1.5rem, 4.2vw, 2.2rem);
-  line-height: 1.1;
+  font-size: clamp(1.85rem, 5vw, 2.75rem);
+  line-height: 1.05;
   text-shadow: 2px 2px 0 rgba(255, 240, 170, 0.65);
 }
 
 .register-display {
   position: absolute;
-  right: max(14px, calc((100vw - 1100px) / 2));
-  bottom: 10px;
+  right: max(16px, calc((100vw - 1100px) / 2));
+  bottom: 16px;
   display: grid;
   grid-template-columns: auto auto;
-  min-width: 190px;
-  padding: 6px 10px;
-  border: 3px solid #091719;
+  min-width: 240px;
+  padding: 10px 14px;
+  border: 4px solid #091719;
   border-radius: 4px;
   background: #102429;
-  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.72), inset 0 0 0 1px #32494c;
+  box-shadow: 4px 5px 0 rgba(0, 0, 0, 0.72), inset 0 0 0 2px #32494c;
   color: #b4ef5c;
   font-family: Consolas, monospace;
   text-shadow: 0 0 7px rgba(180, 239, 92, 0.58);
 }
 
 .register-display span {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
 }
 
 .register-display strong {
   justify-self: end;
-  font-size: 0.88rem;
+  font-size: 1rem;
 }
 
 .register-display small {
   grid-column: 1 / -1;
-  margin-top: 2px;
+  margin-top: 3px;
   color: #7fb5a6;
-  font-size: 0.64rem;
+  font-size: 0.67rem;
 }
 
 .install-launcher {
   position: absolute;
-  bottom: 10px;
-  left: max(14px, calc((100vw - 1100px) / 2));
+  bottom: 16px;
+  left: max(16px, calc((100vw - 1100px) / 2));
   display: inline-flex;
-  min-width: 74px;
-  min-height: 36px;
+  min-width: 86px;
+  min-height: 42px;
   align-items: center;
   justify-content: center;
   gap: 5px;
@@ -1360,28 +1359,24 @@ h3 {
 
 @media (max-width: 720px) {
   .scene-header {
-    min-height: 114px;
+    min-height: 235px;
     background-position: center 38%;
   }
 
   .wood-sign {
-    top: 8px;
-    width: min(80%, 320px);
-    padding: 5px 10px 6px;
+    top: 17px;
+    width: min(82%, 360px);
   }
 
   .register-display {
-    right: 10px;
-    bottom: 8px;
-    min-width: 170px;
-    padding: 5px 8px;
+    right: 13px;
+    bottom: 12px;
+    min-width: 215px;
   }
 
   .install-launcher {
-    bottom: 8px;
-    left: 10px;
-    min-height: 32px;
-    padding: 4px 8px;
+    bottom: 12px;
+    left: 12px;
   }
 
   .control-grid {
@@ -1426,43 +1421,6 @@ h3 {
 }
 
 @media (max-width: 430px) {
-  .scene-header {
-    min-height: 104px;
-  }
-
-  .wood-sign {
-    top: 6px;
-    width: min(88%, 300px);
-    padding: 4px 8px 5px;
-  }
-
-  .wood-sign h1 {
-    font-size: 1.45rem;
-  }
-
-  .wood-sign-small {
-    font-size: 0.6rem;
-  }
-
-  .register-display {
-    right: 8px;
-    bottom: 6px;
-    min-width: 145px;
-    padding: 4px 6px;
-  }
-
-  .register-display span {
-    font-size: 0.7rem;
-  }
-
-  .register-display strong {
-    font-size: 0.8rem;
-  }
-
-  .register-display small {
-    font-size: 0.6rem;
-  }
-
   .main-content,
   .page-shell {
     width: min(100% - 18px, 1100px);
