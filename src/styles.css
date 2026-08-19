@@ -29,6 +29,7 @@
 html {
   min-width: 320px;
   background: #79d4e8;
+  touch-action: manipulation;
 }
 
 body {
