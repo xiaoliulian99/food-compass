@@ -23,6 +23,7 @@ import {
 } from "lucide";
 import { CATEGORIES, DEFAULT_STORES, REGIONS } from "./data.js";
 import { COOLDOWN_DAYS, daysSince, getCandidates, recommendationReason } from "./recommender.js";
+import { createStoreSearchIndex, matchesSearchIndex, matchesStoreSearch } from "./store-search.js";
 import "./styles.css";
 
 const STORAGE_KEY = "food-compass-v1";
@@ -483,14 +484,13 @@ function renderHome() {
 }
 
 function renderStores() {
-  const query = ui.search.trim().toLowerCase();
   const filtered = data.stores
     .filter((store) => {
-      const matchesQuery = [store.name, store.area, store.category, store.location].some((value) => value.toLowerCase().includes(query));
       const matchesFilter = ui.storeFilter === "全部" || (ui.storeFilter === "营业中" ? store.active : !store.active);
-      return matchesQuery && matchesFilter;
+      return matchesFilter;
     })
     .sort((a, b) => Number(b.verified) - Number(a.verified) || a.name.localeCompare(b.name, "zh-CN"));
+  const visibleCount = filtered.filter((store) => matchesStoreSearch(store, ui.search)).length;
 
   return `<main class="page-shell">
     <header class="page-header">
@@ -505,14 +505,14 @@ function renderStores() {
     </div>
     <section class="store-list" aria-label="店铺列表">
       ${filtered.length ? filtered.map(renderStoreRow).join("") : `<div class="empty-list">没有找到匹配店铺</div>`}
-      <div class="empty-list live-search-empty" hidden>没有找到匹配店铺</div>
+      <div class="empty-list live-search-empty" ${filtered.length && !visibleCount ? "" : "hidden"}>没有找到匹配店铺</div>
     </section>
   </main>`;
 }
 
 function renderStoreRow(store) {
-  const searchText = [store.name, store.area, store.category, store.location].join(" ").toLowerCase();
-  return `<article class="store-row ${store.active ? "" : "inactive"}" data-search="${escapeHtml(searchText)}">
+  const hiddenAttr = matchesStoreSearch(store, ui.search) ? "" : " hidden";
+  return `<article class="store-row ${store.active ? "" : "inactive"}" data-search="${escapeHtml(createStoreSearchIndex(store))}"${hiddenAttr}>
     <div class="store-avatar tone-${categoryTone(store.category)}">${escapeHtml(store.name.slice(0, 1))}</div>
     <div class="store-row-copy">
       <div class="store-row-title"><h2>${escapeHtml(store.name)}</h2>${store.verified ? `<span>常吃</span>` : ""}</div>
@@ -634,10 +634,9 @@ function logMealOptions() {
 }
 
 function filterLogStores(query) {
-  const needle = String(query ?? "").trim().toLowerCase();
   let visibleCount = 0;
   document.querySelectorAll(".log-store-row").forEach((row) => {
-    row.hidden = needle ? !row.dataset.search.includes(needle) : false;
+    row.hidden = !matchesSearchIndex(row.dataset.search, query);
     if (!row.hidden) visibleCount += 1;
   });
   const empty = document.querySelector(".live-log-empty");
@@ -655,13 +654,14 @@ function logMealDialogTemplate() {
       <label class="search-box log-search">${icon("search", 18)}<input id="log-store-search" type="search" placeholder="搜店名、区域或品类" value="${escapeHtml(ui.logSearch)}" autocomplete="off" /></label>
       <div class="log-store-list" aria-label="可选店铺">
         ${matches.map((store) => {
-          const searchText = [store.name, store.area, store.category, store.location].join(" ").toLowerCase();
-          return `<button class="log-store-row" data-action="log-store" data-id="${store.id}" data-search="${escapeHtml(searchText)}" type="button">
+          const index = createStoreSearchIndex(store);
+          const hiddenAttr = matchesSearchIndex(index, ui.logSearch) ? "" : " hidden";
+          return `<button class="log-store-row" data-action="log-store" data-id="${store.id}" data-search="${escapeHtml(index)}"${hiddenAttr} type="button">
             <strong>${escapeHtml(store.name)}</strong>
             <span>${escapeHtml(store.category)} · ${escapeHtml(store.location)}</span>
           </button>`;
         }).join("")}
-        <div class="empty-list live-log-empty" hidden>没有找到匹配店铺</div>
+        <div class="empty-list live-log-empty" ${matches.some((store) => matchesStoreSearch(store, ui.logSearch)) ? "hidden" : ""}>没有找到匹配店铺</div>
       </div>
     </div>
   </dialog>`;
@@ -735,6 +735,19 @@ function recordMeal(store) {
   persist();
   generateRecommendations();
 }
+
+let lastTouchEnd = 0;
+document.addEventListener(
+  "touchend",
+  (event) => {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 350 && !event.target.closest("button, a, input, textarea, select, label, [data-action]")) {
+      event.preventDefault();
+    }
+    lastTouchEnd = now;
+  },
+  { passive: false },
+);
 
 document.addEventListener("click", async (event) => {
   const target = event.target.closest("[data-action]");
@@ -863,10 +876,9 @@ document.addEventListener("input", (event) => {
   }
   if (event.target.id === "store-search") {
     ui.search = event.target.value;
-    const query = ui.search.trim().toLowerCase();
     let visibleCount = 0;
     document.querySelectorAll(".store-row").forEach((row) => {
-      row.hidden = !row.dataset.search.includes(query);
+      row.hidden = !matchesSearchIndex(row.dataset.search, ui.search);
       if (!row.hidden) visibleCount += 1;
     });
     const empty = document.querySelector(".live-search-empty");

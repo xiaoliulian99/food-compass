@@ -10,7 +10,8 @@
     "test": "node --test"
   },
   "dependencies": {
-    "lucide": "^0.468.0"
+    "lucide": "^0.468.0",
+    "pinyin-pro": "^3.29.3"
   },
   "devDependencies": {
     "playwright-core": "^1.61.1",
