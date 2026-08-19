@@ -88,6 +88,7 @@ let ui = {
   editingStoreId: null,
   logSearch: "",
   toast: "",
+  loggingMeal: false,
 };
 
 function persist() {
@@ -699,6 +700,18 @@ function render() {
   bindLogMealDialog();
 }
 
+function commitLoggedStore(storeId) {
+  if (ui.loggingMeal) return;
+  const store = data.stores.find((item) => item.id === storeId);
+  if (!store) return;
+  ui.loggingMeal = true;
+  recordMeal(store);
+  ui.logSearch = "";
+  ui.view = "history";
+  showToast(`已记下「${store.name}」`);
+  ui.loggingMeal = false;
+}
+
 function bindLogMealDialog() {
   const dialog = document.querySelector("#log-meal-dialog");
   const search = document.querySelector("#log-store-search");
@@ -713,12 +726,9 @@ function bindLogMealDialog() {
   dialog.addEventListener("click", (event) => {
     const button = event.target.closest("[data-action='log-store']");
     if (!button) return;
-    const store = data.stores.find((item) => item.id === button.dataset.id);
-    if (!store) return;
-    recordMeal(store);
-    ui.logSearch = "";
-    ui.view = "history";
-    showToast(`已记下「${store.name}」`);
+    event.preventDefault();
+    event.stopPropagation();
+    commitLoggedStore(button.dataset.id);
   });
 }
 
@@ -813,17 +823,11 @@ document.addEventListener("click", async (event) => {
   }
   if (action === "open-log-meal") {
     ui.logSearch = "";
+    ui.loggingMeal = false;
     render();
     document.querySelector("#log-meal-dialog").showModal();
-    document.querySelector("#log-store-search")?.focus();
-  }
-  if (action === "log-store") {
-    const store = data.stores.find((item) => item.id === target.dataset.id);
-    if (store) {
-      recordMeal(store);
-      ui.logSearch = "";
-      ui.view = "history";
-      showToast(`已记下「${store.name}」`);
+    if (!window.matchMedia("(pointer: coarse)").matches) {
+      document.querySelector("#log-store-search")?.focus();
     }
   }
   if (action === "install-app") {
